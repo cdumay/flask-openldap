@@ -4,7 +4,7 @@
 flask-openldap
 ==============
 
-Flask extension to query an openLDAP server using `Flask-SimpleLDAP <https://github.com/admiralobvious/flask-simpleldap>_`.
+Flask extension to query an openLDAP server using `Flask-SimpleLDAP <https://github.com/admiralobvious/flask-simpleldap>`_.
 
 License
 -------
