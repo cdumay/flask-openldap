@@ -28,6 +28,24 @@ class LDAPManager(LDAP):
         app.config.setdefault('LDAP_USER_MAIL', "user@example.com")
         LDAP.init_app(app)
 
+    @staticmethod
+    def to_bytes(value):
+        return str(value).encode('UTF-8')
+
+    @staticmethod
+    def value_to_ldap(value):
+        if isinstance(value, (list, tuple)):
+            return [LDAPManager.to_bytes(x) for x in value]
+        else:
+            return [LDAPManager.to_bytes(value)]
+
+    @staticmethod
+    def to_ldap(data):
+        res = list()
+        for key, value in data.items():
+            res.append((key, LDAPManager.value_to_ldap(value)))
+        return res
+
     def create_username(self):
         """docstring for create_username"""
         for _ in range(0, 5000):
@@ -138,7 +156,7 @@ class LDAPManager(LDAP):
             if servicename:
                 data['description'] = servicename
 
-            conn.add_s(dn, to_ldap(data))
+            conn.add_s(dn, LDAPManager.to_ldap(data))
             conn.unbind_s()
 
             return {"email": mail, "password": password, "username": username}
@@ -223,8 +241,8 @@ class LDAPManager(LDAP):
         conn = self.bind
         try:
             dn = "uid=%s,%s" % (username, current_app.config['LDAP_BASE_DN'])
-            old_value = {attr: value_to_ldap(old)}
-            new_value = {attr: value_to_ldap(new)}
+            old_value = {attr: LDAPManager.value_to_ldap(old)}
+            new_value = {attr: LDAPManager.value_to_ldap(new)}
 
             ldif = modlist.modifyModlist(old_value, new_value)
             conn.modify_s(str(dn), ldif)
