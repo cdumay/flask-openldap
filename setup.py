@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 setup(
     name='flask-openldap',
     version=open('VERSION', 'r').read().strip(),
-    description="HTTP client",
+    description="Flask extension to query an openLDAP server",
     long_description=open('README.rst', 'r').read().strip(),
     classifiers=["Programming Language :: Python"],
     keywords='',
