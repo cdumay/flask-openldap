@@ -1,0 +1,14 @@
+language: python
+python:
+- 2.7
+- 3.5
+script:
+- python setup.py test
+deploy:
+  provider: pypi
+  user: cdumay
+  password:
+    secure: QaUIQwuLJvzCDnTa8tJVNOXXt5JAYOTvxxiNuzzm6dq14/XiWQGCZe83LSkiafIa95e9HobaFoM652ruDAkPOHK5L5Twl2PYU8FSHLR6McaO28eAbJiycFSLtIx3pcUKxs8zD9XBpvZ4X59KjdLKICUVXSbLLI+Yjo/FwUEwjFrlZlCsODt5eVnUJ09alWSpvoqBV6L21aYoUsgrljzOaxNqHs+Rv7hBmL6PAaWA76QWRlxsiK5jBwVf6khGA+DKxvwAks55jKYZbQxZeRf1jTuC56N7Izw017rkmpO2MRKo7GcLukCi2cjjDyHUh42HjhkPJp0ewbA7n6KL3yZEdMLL0L80h6LqqrUU5BGdqRkNYhimvdr4kD/NlmxheiMd6A3F/r3p0o6UcwW1R05bJiG+lEKdtqbaioyEfymRJ2CzZvWceaukUH08Z6nlnw2124P9tErF+iMqopQEVC/ib9NnRvzmXZBB3jsaGUk1nmyHfkzBX6NUN7qjzoQFoPxG4yDkCNw98t+24jWIk5kFHfD1pSvnhyS0LHH+r9VjHnka8gXYf6yTol7aNMJw32RfodEm+XhwSbxMky5cP97c2vJS9owABFzY/vvLdU7FZWYJTAFQXKjzIcF+bVU+o2mmqjUHbAeMld1+mIwLSjHsIVPWuBm9YyGZsAkTLIqwdhE=
+  on:
+    tags: true
+    repo: cdumay/flask-openldap
