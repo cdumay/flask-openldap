@@ -165,15 +165,18 @@ class LDAPManager(LDAP):
         except Exception as err:
             raise exceptions.ValidationError(message=str(err))
 
-    def update_password(self, username):
+    def update_password(self, username, password=None):
         """docstring for update_password"""
         luser = self.get_user(uid=username)
         if luser is None:
             raise exceptions.NotFound("User '%s' doesn't exists !" % username)
 
+        if password in (None, ""):
+            password = create_random_string()
+
         res = self.update_attribute(
             username, "userPassword", getattr(luser, 'userPassword', ""),
-            to_hash(create_random_string())
+            to_hash(password)
         )
         return {
             "email": getattr(luser, 'mail', ""),
