@@ -91,7 +91,9 @@ class LDAPManager(LDAP):
                 return list()
 
         except ldap.LDAPError as err:
-            raise exceptions.ValidationError(message=str(err.message))
+            raise exceptions.ValidationError(
+                message=str(getattr(err, 'message', err))
+            )
         except Exception as err:
             raise exceptions.ValidationError(message=str(err))
 
@@ -122,7 +124,9 @@ class LDAPManager(LDAP):
                 return LDAPUser(records[0][0], **records[0][1])
 
         except ldap.LDAPError as err:
-            raise exceptions.ValidationError(message=str(err.message))
+            raise exceptions.ValidationError(
+                message=str(getattr(err, 'message', err))
+            )
         except Exception as err:
             raise exceptions.ValidationError(message=str(err))
 
@@ -244,17 +248,28 @@ class LDAPManager(LDAP):
         conn = self.bind
         try:
             dn = "uid=%s,%s" % (username, current_app.config['LDAP_BASE_DN'])
-            old_value = {attr: LDAPManager.value_to_ldap(old)}
-            new_value = {attr: LDAPManager.value_to_ldap(new)}
+            if old in ("", None, list()):
+                mod_attrs = [
+                    (ldap.MOD_ADD, attr, LDAPManager.value_to_ldap(new))
+                ]
+            elif new in ("", None, list()):
+                mod_attrs = [
+                    (ldap.MOD_DELETE, attr, LDAPManager.value_to_ldap(old))
+                ]
+            else:
+                mod_attrs = [
+                    (ldap.MOD_REPLACE, attr, LDAPManager.value_to_ldap(new))
+                ]
 
-            ldif = modlist.modifyModlist(old_value, new_value)
-            conn.modify_s(str(dn), ldif)
+            conn.modify_s(str(dn), mod_attrs)
             conn.unbind_s()
 
             return {"old": old, "new": new}
 
         except ldap.LDAPError as err:
-            raise exceptions.ValidationError(message=str(err.message))
+            raise exceptions.ValidationError(
+                message=str(getattr(err, 'message', err))
+            )
         except Exception as err:
             raise exceptions.ValidationError(message=str(err))
 
@@ -276,6 +291,8 @@ class LDAPManager(LDAP):
             return user
 
         except ldap.LDAPError as err:
-            raise exceptions.ValidationError(message=str(err.message))
+            raise exceptions.ValidationError(
+                message=str(getattr(err, 'message', err))
+            )
         except Exception as err:
             raise exceptions.ValidationError(message=str(err))
