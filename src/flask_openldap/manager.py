@@ -49,8 +49,10 @@ class LDAPManager(LDAP):
     def create_username(self):
         """docstring for create_username"""
         for _ in range(0, 5000):
-            username = self.app.config['LDAP_USER_PREFIX'] + \
-                       create_random_string(string.digits, 5)
+            username = "{}{}".format(
+                current_app.config['LDAP_USER_PREFIX'],
+                create_random_string(string.digits, 5)
+            )
             if self.exists(uid=username) is False:
                 return username
         raise exceptions.InternalServerError(
