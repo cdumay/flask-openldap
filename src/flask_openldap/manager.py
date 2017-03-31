@@ -141,7 +141,7 @@ class LDAPManager(LDAP):
             if not password:
                 password = create_random_string()
             if not mail:
-                mail = self.app.config['LDAP_USER_MAIL']
+                mail = current_app.config['LDAP_USER_MAIL']
 
             dn = 'uid=%s,%s' % (username, current_app.config['LDAP_BASE_DN'])
             uid, gid = self.get_random_ids()
