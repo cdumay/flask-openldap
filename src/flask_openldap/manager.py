@@ -134,7 +134,7 @@ class LDAPManager(LDAP):
 
     # noinspection PyUnresolvedReferences
     def add_user(self, username, mail=None, password=None, lastname=None,
-                 firstname=None, servicename=None):
+                 firstname=None, description=None):
         """docstring for add_user"""
         conn = self.bind
         try:
@@ -159,8 +159,8 @@ class LDAPManager(LDAP):
                 givenName=unidecode(firstname) if firstname else username,
                 cn=mail
             )
-            if servicename:
-                data['description'] = servicename
+            if description:
+                data['description'] = description
 
             conn.add_s(dn, LDAPManager.to_ldap(data))
             conn.unbind_s()
