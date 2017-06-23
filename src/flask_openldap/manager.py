@@ -8,6 +8,7 @@
 """
 import string
 import ldap
+from flask_openldap import MESSAGE_MAP
 
 from ldap import modlist
 from random import randint
@@ -56,7 +57,8 @@ class LDAPManager(LDAP):
             if self.exists(uid=username) is False:
                 return username
         raise exceptions.InternalServerError(
-            message="Failed to create username"
+            message=MESSAGE_MAP["FailedToCreateUsername"],
+            extra=dict(factory="openldap", msgid="FailedToCreateUsername")
         )
 
     def get_ids(self):
@@ -175,7 +177,12 @@ class LDAPManager(LDAP):
         """docstring for update_password"""
         luser = self.get_user(uid=username)
         if luser is None:
-            raise exceptions.NotFound("User '%s' doesn't exists !" % username)
+            raise exceptions.NotFound(
+                message=MESSAGE_MAP["UserDoesNotExists"], extra=dict(
+                    factory="openldap", msgid="UserDoesNotExists",
+                    long_message="User '{}' doesn't exists !".format(username)
+                )
+            )
 
         if password in (None, ""):
             password = create_random_string()
@@ -194,7 +201,12 @@ class LDAPManager(LDAP):
         """docstring for update_status"""
         luser = self.get_user(uid=username)
         if luser is None:
-            raise exceptions.NotFound("User '%s' doesn't exists !" % username)
+            raise exceptions.NotFound(
+                message=MESSAGE_MAP["UserDoesNotExists"], extra=dict(
+                    factory="openldap", msgid="UserDoesNotExists",
+                    long_message="User '{}' doesn't exists !".format(username)
+                )
+            )
 
         return self.update_attribute(
             username, "shadowExpire", getattr(luser, 'shadowExpire', "-1"),
@@ -205,7 +217,12 @@ class LDAPManager(LDAP):
         """add_transport"""
         luser = self.get_user(uid=username)
         if luser is None:
-            raise exceptions.NotFound("User '%s' doesn't exists !" % username)
+            raise exceptions.NotFound(
+                message=MESSAGE_MAP["UserDoesNotExists"], extra=dict(
+                    factory="openldap", msgid="UserDoesNotExists",
+                    long_message="User '{}' doesn't exists !".format(username)
+                )
+            )
 
         if hasattr(luser, 'destinationIndicator'):
             transports = getattr(luser, 'destinationIndicator', list())
@@ -225,7 +242,12 @@ class LDAPManager(LDAP):
         """remove transport"""
         luser = self.get_user(uid=username)
         if luser is None:
-            raise exceptions.NotFound("User '%s' doesn't exists !" % username)
+            raise exceptions.NotFound(
+                message=MESSAGE_MAP["UserDoesNotExists"], extra=dict(
+                    factory="openldap", msgid="UserDoesNotExists",
+                    long_message="User '{}' doesn't exists !".format(username)
+                )
+            )
 
         if hasattr(luser, 'destinationIndicator'):
             transports = getattr(luser, 'destinationIndicator', list())
@@ -281,8 +303,10 @@ class LDAPManager(LDAP):
         user = self.get_user(uid=username)
         if user is None:
             raise exceptions.NotFound(
-                message="User doesn't exists !",
-                extra=dict(query=dict(username=username))
+                message=MESSAGE_MAP["UserDoesNotExists"], extra=dict(
+                    factory="openldap", msgid="UserDoesNotExists",
+                    long_message="User '{}' doesn't exists !".format(username)
+                )
             )
 
         conn = self.bind

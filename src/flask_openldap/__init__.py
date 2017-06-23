@@ -6,3 +6,8 @@
 
 
 """
+
+MESSAGE_MAP = dict(
+    FailedToCreateUsername="Failed to create username",
+    UserDoesNotExists="User doesn't exists !"
+)
