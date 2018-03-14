@@ -8,14 +8,13 @@
 """
 import string
 import ldap
-from flask_openldap import MESSAGE_MAP
+from cdumay_error import InternalError, ValidationError, NotFound
 
-from ldap import modlist
+from flask_openldap import MESSAGE_MAP
 from random import randint
 from flask import current_app
 from flask_simpleldap import LDAP
 from text_unidecode import unidecode
-from cdumay_rest_client import exceptions
 from flask_openldap.user import LDAPUser
 from flask_openldap.utils import create_random_string, to_hash
 
@@ -56,7 +55,7 @@ class LDAPManager(LDAP):
             )
             if self.exists(uid=username) is False:
                 return username
-        raise exceptions.InternalServerError(
+        raise InternalError(
             message=MESSAGE_MAP["FailedToCreateUsername"],
             extra=dict(factory="openldap", msgid="FailedToCreateUsername")
         )
@@ -105,7 +104,7 @@ class LDAPManager(LDAP):
         """docstring for exists"""
         try:
             return True if self.get_user(**kwargs) else False
-        except exceptions.ValidationError:
+        except ValidationError:
             return False
 
     # noinspection PyUnresolvedReferences
@@ -177,7 +176,7 @@ class LDAPManager(LDAP):
         """docstring for update_password"""
         luser = self.get_user(uid=username)
         if luser is None:
-            raise exceptions.NotFound(
+            raise NotFound(
                 message=MESSAGE_MAP["UserDoesNotExists"], extra=dict(
                     factory="openldap", msgid="UserDoesNotExists",
                     long_message="User '{}' doesn't exists !".format(username)
@@ -201,7 +200,7 @@ class LDAPManager(LDAP):
         """docstring for update_status"""
         luser = self.get_user(uid=username)
         if luser is None:
-            raise exceptions.NotFound(
+            raise NotFound(
                 message=MESSAGE_MAP["UserDoesNotExists"], extra=dict(
                     factory="openldap", msgid="UserDoesNotExists",
                     long_message="User '{}' doesn't exists !".format(username)
@@ -217,7 +216,7 @@ class LDAPManager(LDAP):
         """add_transport"""
         luser = self.get_user(uid=username)
         if luser is None:
-            raise exceptions.NotFound(
+            raise NotFound(
                 message=MESSAGE_MAP["UserDoesNotExists"], extra=dict(
                     factory="openldap", msgid="UserDoesNotExists",
                     long_message="User '{}' doesn't exists !".format(username)
@@ -242,7 +241,7 @@ class LDAPManager(LDAP):
         """remove transport"""
         luser = self.get_user(uid=username)
         if luser is None:
-            raise exceptions.NotFound(
+            raise NotFound(
                 message=MESSAGE_MAP["UserDoesNotExists"], extra=dict(
                     factory="openldap", msgid="UserDoesNotExists",
                     long_message="User '{}' doesn't exists !".format(username)
