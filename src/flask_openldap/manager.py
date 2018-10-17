@@ -94,11 +94,11 @@ class LDAPManager(LDAP):
                 return list()
 
         except ldap.LDAPError as err:
-            raise exceptions.ValidationError(
+            raise ValidationError(
                 message=str(getattr(err, 'message', err))
             )
         except Exception as err:
-            raise exceptions.ValidationError(message=str(err))
+            raise ValidationError(message=str(err))
 
     def exists(self, **kwargs):
         """docstring for exists"""
@@ -127,11 +127,11 @@ class LDAPManager(LDAP):
                 return LDAPUser(records[0][0], **records[0][1])
 
         except ldap.LDAPError as err:
-            raise exceptions.ValidationError(
+            raise ValidationError(
                 message=str(getattr(err, 'message', err))
             )
         except Exception as err:
-            raise exceptions.ValidationError(message=str(err))
+            raise ValidationError(message=str(err))
 
     # noinspection PyUnresolvedReferences
     def add_user(self, username, mail=None, password=None, lastname=None,
@@ -168,9 +168,9 @@ class LDAPManager(LDAP):
 
             return {"email": mail, "password": password, "username": username}
         except (ldap.INVALID_SYNTAX, ldap.OBJECT_CLASS_VIOLATION) as exc:
-            raise exceptions.ValidationError(extra=exc.args[0])
+            raise ValidationError(extra=exc.args[0])
         except Exception as err:
-            raise exceptions.ValidationError(message=str(err))
+            raise ValidationError(message=str(err))
 
     def update_password(self, username, password=None):
         """docstring for update_password"""
@@ -290,18 +290,18 @@ class LDAPManager(LDAP):
             return {"old": old, "new": new}
 
         except ldap.LDAPError as err:
-            raise exceptions.ValidationError(
+            raise ValidationError(
                 message=str(getattr(err, 'message', err))
             )
         except Exception as err:
-            raise exceptions.ValidationError(message=str(err))
+            raise ValidationError(message=str(err))
 
     # noinspection PyUnresolvedReferences
     def delete_user(self, username):
         """docstring for delete_user"""
         user = self.get_user(uid=username)
         if user is None:
-            raise exceptions.NotFound(
+            raise NotFound(
                 message=MESSAGE_MAP["UserDoesNotExists"], extra=dict(
                     factory="openldap", msgid="UserDoesNotExists",
                     long_message="User '{}' doesn't exists !".format(username)
@@ -316,8 +316,8 @@ class LDAPManager(LDAP):
             return user
 
         except ldap.LDAPError as err:
-            raise exceptions.ValidationError(
+            raise ValidationError(
                 message=str(getattr(err, 'message', err))
             )
         except Exception as err:
-            raise exceptions.ValidationError(message=str(err))
+            raise ValidationError(message=str(err))
