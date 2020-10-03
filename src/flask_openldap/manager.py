@@ -71,8 +71,8 @@ class LDAPManager(LDAP):
     def get_random_ids(self):
         """create random uid & gid for a new user"""
         ids = self.get_ids()
-        uids = [x for x in range(15000, 20000) if x not in ids[0]]
-        gids = [x for x in range(15000, 20000) if x not in ids[1]]
+        uids = [x for x in range(15000, 50000) if x not in ids[0]]
+        gids = [x for x in range(15000, 50000) if x not in ids[1]]
 
         return uids[randint(0, len(uids) - 1)], gids[randint(0, len(gids) - 1)]
 
