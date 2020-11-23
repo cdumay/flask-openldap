@@ -1,5 +1,7 @@
-/src/*.egg-info/
+.changelog.json
+.jira-release.yml
+/.eggs/
 /.idea/
 /dist/
-/.eggs/
+/src/*.egg-info/
 __pycache__
