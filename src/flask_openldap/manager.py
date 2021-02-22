@@ -8,7 +8,7 @@
 """
 import string
 import ldap
-from cdumay_error import InternalError, ValidationError, NotFound
+from cdumay_error.types import InternalError, ValidationError, NotFound
 
 from flask_openldap import MESSAGE_MAP
 from random import randint
